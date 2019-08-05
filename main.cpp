@@ -311,6 +311,7 @@ int main( int argc, char* argv[] )
 
         //Get Output    
         auto output = outputData.get();
+        cout << "Type of output is :" << typeid(output).name() << endl;
         auto outputSize = net->getOutputSize()/ sizeof(float) / batchCount;
         for(int i = 0;i< batchCount ; ++i)
         {    
