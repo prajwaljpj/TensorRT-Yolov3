@@ -13,3 +13,8 @@ data
 
 # models
 models
+
+*.caffemodel
+*.prototxt
+*.jpg
+*.engine
