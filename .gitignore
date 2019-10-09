@@ -19,3 +19,7 @@ models
 *.jpg
 *.engine
 *.pyx
+ 
+ # personal
+ backup_old_discard
+ __pycache__
