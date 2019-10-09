@@ -18,3 +18,4 @@ models
 *.prototxt
 *.jpg
 *.engine
+*.pyx

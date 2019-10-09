@@ -1,4 +1,4 @@
-#include <boost/python.hpp>
+// #include <boost/python.hpp>
 #include <opencv2/opencv.hpp>
 #include "TrtNet.h"
 /* #include "argsParser.h" */
@@ -18,6 +18,9 @@ using namespace Yolo;
 class Inference
 {
     public:
+
+        Inference(){ cout << "Class object created\n";}
+
         /* list<vector<Bbox>> outputs; */
         float nmsThresh = 0.45;
         int batchSize = 1;
@@ -42,6 +45,8 @@ class Inference
 
 };
 
+
+#if 0
 using namespace boost::python;
 
 BOOST_PYTHON_MODULE(inference)
@@ -75,3 +80,4 @@ BOOST_PYTHON_MODULE(inference)
 std::unique_ptr<T> make_unique(Args&&... args) {
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }*/
+#endif

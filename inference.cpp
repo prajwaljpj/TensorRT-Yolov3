@@ -165,6 +165,9 @@ vector<string> Inference::split(const string& str, char delim)
 
 bool Inference::loadTRTModel(string netname)
 {
+
+    // cout << "Enter loadTRTModel function \n";
+
     if (netname.length() > 0){
         net.reset(new trtNet(netname));
         assert(net->getBatchSize() == batchSize);
