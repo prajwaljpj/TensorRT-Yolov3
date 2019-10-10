@@ -21,11 +21,8 @@ def getBbox():
 	string=fifo.read()
 
 	print("len of string::", len(string))
-	print("len of string::", len(string))
-	print("len of string::", len(string))
 
 	box_count = int(len(string) / 24)
-	print("box count: ", box_count)
 	print("box count: ", box_count)
 
 	box = []

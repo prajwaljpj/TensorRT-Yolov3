@@ -10,9 +10,40 @@
 
 using namespace std;
 
+#if 0
+
+void push_boxed_data(Inference infr, cv::Mat img, int fd)
+{
+  std::list<vector<Bbox>> op1 = infr.infer(img);
+  
+  auto bbox1 = *op1.begin(); 
+
+  for(const auto& item : bbox1)  
+    {
+      cout << "class=" << item.classId << " prob=" << item.score*100 << endl;  
+      cout << "left=" << item.left << " right=" << item.right << " top=" << item.top << " bot=" << item.bot << endl;  
+
+      unsigned char* box = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(&item));
+      write(fd, box, sizeof(item));
+    }  
+  cout << "write finished" << endl;
+
+  char delim = 'd';
+  cout << "Size of delim::" << sizeof(delim) << endl;
+  // write(fd, &delim, sizeof(delim));
+
+}
+
+#endif
+
 int main(int argc, char** argv)
 { 
     cout << "hello" << endl;
+    string enginename = "/home/rbccps2080/projects/prajwal/test/TensorRT-Yolov3/yolov3_fp32.engine";
+    cout << enginename << endl;
+    Inference iff;
+    iff.loadTRTModel(enginename);
+
     vector<cv::Mat> images; 
 
     // string filepath = argv[1];
@@ -24,16 +55,6 @@ int main(int argc, char** argv)
     cout << images.size() << endl; 
     cout << images[0].size() << endl;
 
-    string enginename = "/home/rbccps2080/projects/prajwal/test/TensorRT-Yolov3/yolov3_fp32.engine";
-    cout << enginename << endl;
-    Inference iff;
-    iff.loadTRTModel(enginename);
-    std::list<vector<Bbox>> op1 = iff.infer(images);
-
-    auto bbox1 = *op1.begin(); 
-
-    cout << "size of bbox1: " << bbox1.size() << endl;
-
     int fd;
     const char* myfifo = "/tmp/fifopipe";
     /* create the FIFO (named pipe) */
@@ -43,20 +64,30 @@ int main(int argc, char** argv)
     fd = open(myfifo, O_WRONLY);
     cout << "Connected\n";
 
-    for(const auto& item : bbox1)  
-    {
-        cv::rectangle(img_0,cv::Point(item.left,item.top),cv::Point(item.right,item.bot),cv::Scalar(0,0,255),3,8,0);  
-        cout << "class=" << item.classId << " prob=" << item.score*100 << endl;  
-        cout << "left=" << item.left << " right=" << item.right << " top=" << item.top << " bot=" << item.bot << endl;  
+    for(auto i=0; i<images.size(); i++)
+      {
+	// push_boxed_data(iff, images[i], fd);
+	vector<cv::Mat> image_vect; 
+	image_vect.push_back(images[i]);
 
-        unsigned char* box = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(&item));
-        write(fd, box, sizeof(item));
-    }  
-    cout << "write finished" << endl;
+	std::list<vector<Bbox>> op1 = iff.infer(image_vect);
+  
+	auto bbox1 = *op1.begin(); 
 
-    char delim = 'd';
-    cout << "Size of delim::" << sizeof(delim) << endl;
-    // write(fd, &delim, sizeof(delim));
+	for(const auto& item : bbox1)  
+	  {
+	    cout << "class=" << item.classId << " prob=" << item.score*100 << endl;  
+	    cout << "left=" << item.left << " right=" << item.right << " top=" << item.top << " bot=" << item.bot << endl;  
+
+	    unsigned char* box = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(&item));
+	    write(fd, box, sizeof(item));
+	  }  
+	cout << "write finished" << endl;
+
+	char delim = 'd';
+	cout << "Size of delim::" << sizeof(delim) << endl;
+	write(fd, &delim, sizeof(delim));
+      }
 
     close(fd);
     cout << "closed finished" << endl;
