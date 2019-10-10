@@ -54,9 +54,9 @@ int main(int argc, char** argv)
     }  
     cout << "write finished" << endl;
 
-    unsigned char delim = "d";
+    char delim = 'd';
     cout << "Size of delim::" << sizeof(delim) << endl;
-    write(fd, delim, sizeof(delim));
+    // write(fd, &delim, sizeof(delim));
 
     close(fd);
     cout << "closed finished" << endl;
