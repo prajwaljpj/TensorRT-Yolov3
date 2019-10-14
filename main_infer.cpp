@@ -67,12 +67,18 @@ int main(int argc, char** argv)
     for(auto i=0; i<images.size(); i++)
       {
 	// push_boxed_data(iff, images[i], fd);
+	// cout << "Size of delim::" << sizeof(delim) << endl;
 	vector<cv::Mat> image_vect; 
 	image_vect.push_back(images[i]);
 
 	std::list<vector<Bbox>> op1 = iff.infer(image_vect);
   
 	auto bbox1 = *op1.begin(); 
+	int delim = bbox1.size();
+	char delim_char = (unsigned char) delim;
+	cout << "delim :: number :: " << delim << endl;
+	cout << "delim :: sizeof :: " << sizeof(delim_char) << endl;
+	write(fd, &delim_char, sizeof(delim_char));
 
 	for(const auto& item : bbox1)  
 	  {
@@ -84,9 +90,9 @@ int main(int argc, char** argv)
 	  }  
 	cout << "write finished" << endl;
 
-	char delim = 'd';
-	cout << "Size of delim::" << sizeof(delim) << endl;
-	write(fd, &delim, sizeof(delim));
+	// char delim = 'd';
+	// cout << "Size of delim::" << sizeof(delim) << endl;
+	// // write(fd, &delim, sizeof(delim));
       }
 
     close(fd);
