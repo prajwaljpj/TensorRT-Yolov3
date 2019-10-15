@@ -25,6 +25,7 @@ def getBbox():
             raise
 
     fifo = os.open(path, os.O_RDONLY)
+    frame_number = 1
 
     while(True):
         try:
@@ -35,7 +36,9 @@ def getBbox():
         head = int.from_bytes(head, "big")
         print("header length(number of boxes): ", head)
         data_byte = os.read(fifo, head*24)
-        print(data_byte)
+        print("python side ::::::::: frame_number :::::::::::::: ", frame_number)
+        frame_number+=1
+        # print(data_byte)
         # print(len(data_byte))
         for i in range(head):
                 data = struct.unpack("=iiiiif", data_byte[i*24:24+(i*24)])

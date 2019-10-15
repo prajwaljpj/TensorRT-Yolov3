@@ -227,11 +227,11 @@ std::list<vector<Bbox>> Inference::infer(vector<cv::Mat> image)
     return outputs;
 }
 
-std::list<vector<Bbox>> Inference::infer_single_image(cv::Mat image)
+vector<Bbox> Inference::infer_single_image(cv::Mat image)
 {
-    std::list<vector<Bbox>> outputs;
+    vector<Bbox> outputs;
     int outputCount;
-    std::list<vector<Bbox>> fail_case;
+    vector<Bbox> fail_case;
     outputCount = net->getOutputSize()/sizeof(float);
     unique_ptr<float[]> outputData(new float[outputCount]);
     inputData.reserve(h*w*c*batchSize);
@@ -269,9 +269,9 @@ std::list<vector<Bbox>> Inference::infer_single_image(cv::Mat image)
         memcpy(result.data(), &output[1], detCount*sizeof(Detection));
 
         auto boxes = postProcessImg(inputImgs[i],result,classNum);
-    outputs.emplace_back(boxes);
+	outputs = boxes;
 
-        output += outputSize;
+	output += outputSize;
     }
     inputImgs.clear();
     inputData.clear();

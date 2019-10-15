@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
+#include "opencv2/opencv.hpp"
+
 
 
 using namespace std;
@@ -43,6 +45,70 @@ int main(int argc, char** argv)
     cout << enginename << endl;
     Inference iff;
     iff.loadTRTModel(enginename);
+    int fd;
+    const char* myfifo = "/tmp/fifopipe";
+    /* create the FIFO (named pipe) */
+    mkfifo(myfifo, 0666);
+    cout << "Waiting for connection to open\n";
+    /* write message to the FIFO */
+    fd = open(myfifo, O_WRONLY);
+    cout << "Connected\n";
+
+    while (1) {
+      // Get list of videos realtime
+      cv::VideoCapture cap("latest.mp4");
+      int frame_num = 0;
+      // Check if camera opened successfully
+	if(!cap.isOpened()){
+	cout << "Error opening video stream or file" << endl;
+	return -1;
+      }
+      while(1){
+ 
+	cv::Mat frame;
+	// Capture frame-by-frame
+	cap >> frame;
+  
+	// If the frame is empty, break immediately
+	if (frame.empty())
+	  break; 
+
+	cout << "C++ side ::::::::: frame_num ::::::::: " << frame_num << endl;
+	frame_num++;
+
+	vector<Bbox> op1 = iff.infer_single_image(frame);
+	frame.release();
+
+	// int delim = op1.size();
+	char delim_char = (unsigned char) op1.size();
+	cout << "delim :: number :: " << op1.size() << endl;
+	cout << "delim :: sizeof :: " << sizeof(delim_char) << endl;
+	write(fd, &delim_char, sizeof(delim_char));
+
+	for(const auto& item : op1)  
+	  {
+	    cout << "class=" << item.classId << " prob=" << item.score*100 << endl;  
+	    cout << "left=" << item.left << " right=" << item.right << " top=" << item.top << " bot=" << item.bot << endl;  
+
+	    unsigned char* box = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(&item));
+	    write(fd, box, sizeof(item));
+	  }  
+	cout << "write finished" << endl;
+
+      }
+      
+    }
+    close(fd);
+    cout << "closed finished" << endl;
+    /* remove the FIFO */
+    unlink(myfifo);
+
+    cout << "unlink finished" << endl;
+
+    return 0;
+
+
+#ifdef not_process
 
     vector<cv::Mat> images; 
 
@@ -103,7 +169,8 @@ int main(int argc, char** argv)
     cout << "unlink finished" << endl;
     // cv::imwrite("img_0.jpg",img_0);  
     // cv::imwrite("img_1.jpg",img_1);  
-    return 0;  
+    return 0;
+#endif
 }
 
 

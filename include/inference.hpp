@@ -41,7 +41,7 @@ class Inference
         vector<string> split(const string& str, char delim);
         bool loadTRTModel(string netname);
         std::list<vector<Bbox>> infer(vector<cv::Mat> image);
-        std::list<vector<Bbox>> infer_single_image(cv::Mat image);
+        vector<Bbox> infer_single_image(cv::Mat image);
 
 };
 
