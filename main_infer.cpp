@@ -53,13 +53,14 @@ int main(int argc, char** argv)
     /* write message to the FIFO */
     fd = open(myfifo, O_WRONLY);
     cout << "Connected\n";
+    cv::VideoCapture cap("latest.mp4");
 
     while (1) {
       // Get list of videos realtime
-      cv::VideoCapture cap("latest.mp4");
+      // cv::VideoCapture cap("latest.mp4");
       int frame_num = 0;
       // Check if camera opened successfully
-	if(!cap.isOpened()){
+      if(!cap.isOpened()){
 	cout << "Error opening video stream or file" << endl;
 	return -1;
       }
@@ -81,14 +82,14 @@ int main(int argc, char** argv)
 
 	// int delim = op1.size();
 	char delim_char = (unsigned char) op1.size();
-	cout << "delim :: number :: " << op1.size() << endl;
-	cout << "delim :: sizeof :: " << sizeof(delim_char) << endl;
+	// cout << "delim :: number :: " << op1.size() << endl;
+	// cout << "delim :: sizeof :: " << sizeof(delim_char) << endl;
 	write(fd, &delim_char, sizeof(delim_char));
 
 	for(const auto& item : op1)  
 	  {
-	    cout << "class=" << item.classId << " prob=" << item.score*100 << endl;  
-	    cout << "left=" << item.left << " right=" << item.right << " top=" << item.top << " bot=" << item.bot << endl;  
+	    // cout << "class=" << item.classId << " prob=" << item.score*100 << endl;  
+	    // cout << "left=" << item.left << " right=" << item.right << " top=" << item.top << " bot=" << item.bot << endl;  
 
 	    unsigned char* box = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(&item));
 	    write(fd, box, sizeof(item));
@@ -119,18 +120,18 @@ int main(int argc, char** argv)
     images.push_back(img_0); 
     images.push_back(img_1); 
     cout << images.size() << endl; 
-    cout << images[0].size() << endl;
+      cout << images[0].size() << endl;
 
-    int fd;
-    const char* myfifo = "/tmp/fifopipe";
-    /* create the FIFO (named pipe) */
-    mkfifo(myfifo, 0666);
-    cout << "Waiting for connection to open\n";
-    /* write message to the FIFO */
-    fd = open(myfifo, O_WRONLY);
-    cout << "Connected\n";
+      int fd;
+      const char* myfifo = "/tmp/fifopipe";
+      /* create the FIFO (named pipe) */
+      mkfifo(myfifo, 0666);
+      cout << "Waiting for connection to open\n";
+      /* write message to the FIFO */
+      fd = open(myfifo, O_WRONLY);
+      cout << "Connected\n";
 
-    for(auto i=0; i<images.size(); i++)
+      for(auto i=0; i<images.size(); i++)
       {
 	// push_boxed_data(iff, images[i], fd);
 	// cout << "Size of delim::" << sizeof(delim) << endl;
