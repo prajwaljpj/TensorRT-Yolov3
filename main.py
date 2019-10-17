@@ -30,35 +30,36 @@ def getBbox():
     while(True):
         videocap = cv2.VideoCapture("latest.mp4")
         if (videocap.isOpened()== False): 
-            print("Error opening video stream or file")
+            print("python side ::::::::: Error opening video stream or file")
 
         while(videocap.isOpened()):
             ret, frame = videocap.read()
             if ret == False:
-                print("********videocap return gave false*******")
+                print("python side ::::::::: ********videocap return gave false*******")
                 break
             
             try:
                 head = os.read(fifo, 1)
             except:
-                print("some error :: end??")
+                print("python side ::::::::: some error :: end??")
 
             head = int.from_bytes(head, "big")
-            print("header length(number of boxes): ", head)
+            print("python side ::::::::: header length(number of boxes): ", head)
             data_byte = os.read(fifo, head*24)
             print("python side ::::::::: frame_number :::::::::::::: ", frame_number)
             frame_number+=1
-            # print(data_byte)
+            print(data_byte)
             print(len(data_byte))
             for i in range(head):
                 if len(data_byte[i*24:24+(i*24)]) != 24:
-                    print("BYTE CONFLICT OCCURED +++++ TRYING TO WAIT IN PYTHON SIZE+++++")
+                    print("python side ::::::::: BYTE CONFLICT OCCURED +++++ TRYING TO WAIT IN PYTHON SIZE+++++")
                     # time.sleep(0.5)
                 try:
                     data = struct.unpack("=iiiiif", data_byte[i*24:24+(i*24)])
                     print(data)
                 except:
-                    print("IGNORING BYTE CONFLICT +++++++++ CHECK THE DATA AFTER THIS+++++++")
+                    print("python side ::::::::: IGNORING BYTE CONFLICT +++++++++ CHECK THE DATA AFTER THIS+++++++")
+                    exit(0)
     # string = fifo.read()
     
 
