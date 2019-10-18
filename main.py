@@ -1,5 +1,5 @@
 import os
-# import sys
+import sys
 import struct
 import subprocess
 from multiprocessing import Process
@@ -35,32 +35,39 @@ def getBbox():
         while(videocap.isOpened()):
             ret, frame = videocap.read()
             if ret == False:
-                print("python side ::::::::: ********videocap return gave false*******")
+                # print("python side ::::::::: ********videocap return gave false*******")
                 break
             
             try:
                 head = os.read(fifo, 1)
+                print("python side ::::::::: value of head in try :: ", head)
+                # head = sys.stdin.read(1)
             except:
                 print("python side ::::::::: some error :: end??")
 
             head = int.from_bytes(head, "big")
             print("python side ::::::::: header length(number of boxes): ", head)
-            data_byte = os.read(fifo, head*24)
+            # print("pythonasdfadf aasdf a asdf asdf asdfasdfasdaffasdf")
+            # print(data_byte.decode("utf-8"))
             print("python side ::::::::: frame_number :::::::::::::: ", frame_number)
             frame_number+=1
-            print(data_byte)
-            print(len(data_byte))
+            # print("python side ::::::::: data_byte :::::::::::::: ", data_byte)
+            # print("python side ::::::::: data_byte length :::::::::::::: ", len(data_byte))
             for i in range(head):
-                if len(data_byte[i*24:24+(i*24)]) != 24:
-                    print("python side ::::::::: BYTE CONFLICT OCCURED +++++ TRYING TO WAIT IN PYTHON SIZE+++++")
-                    # time.sleep(0.5)
-                try:
-                    data = struct.unpack("=iiiiif", data_byte[i*24:24+(i*24)])
-                    print(data)
-                except:
-                    print("python side ::::::::: IGNORING BYTE CONFLICT +++++++++ CHECK THE DATA AFTER THIS+++++++")
-                    exit(0)
-    # string = fifo.read()
+                data_byte = os.read(fifo, 24)
+                print("python side :::::::::::: data_byte value :::::: ", data_byte)
+                print("python side :::::::::::: data_byte value :::::: ", len(data_byte))
+                # if len(data_byte[i*24:24+(i*24)]) != 24:
+                #     print("python side ::::::::: BYTE CONFLICT OCCURED +++++ TRYING TO WAIT IN PYTHON SIZE+++++")
+                #     # time.sleep(0.5)
+                # try:
+                data = struct.unpack("=iiiiif", data_byte)
+                
+                print("python side ::::::::: data :::::::::::::: ", data)
+    #             except:
+    #                 print("python side ::::::::: IGNORING BYTE CONFLICT +++++++++ CHECK THE DATA AFTER THIS+++++++")
+    #                 exit(0)
+    # # string = fifo.read()
     
 
 

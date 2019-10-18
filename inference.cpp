@@ -173,8 +173,8 @@ bool Inference::loadTRTModel(string netname)
         assert(net->getBatchSize() == batchSize);
     }
     else 
-        cout<< "no net present";
-        return false;
+      cerr << "no net present";
+    return false;
     /* outputCount = net->getOutputSize()/sizeof(float); */
     /* outputData = make_unique<float[]>(outputCount); */
     return true;
