@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 
   while (1) {
     // Get list of videos realtime
-    // cv::VideoCapture cap("latest.mp4");
+    cv::VideoCapture cap("latest.mp4");
     int frame_num = 0;
     // Check if camera opened successfully
     if(!cap.isOpened()){
@@ -55,6 +55,15 @@ int main(int argc, char** argv)
 
       vector<Bbox> op1 = iff.infer_single_image(frame);
       frame.release();
+
+      if (op1.empty())
+      {
+        char delim_char = (unsigned char) 0;
+        cout << "delim :: number :: " << op1.size() << endl;
+        cout << "delim :: sizeof :: " << sizeof(delim_char) << endl;
+        write(fd, &delim_char, sizeof(delim_char));
+        continue;
+      }
 
       // int delim = op1.size();
       char delim_char = (unsigned char) op1.size();
@@ -96,10 +105,10 @@ int main(int argc, char** argv)
 	  // fwrite(newbox, sizeof(newbox), 1,stdout);
 	}
       cout << "C++ side ::::::::: write finished" << endl;
-      this_thread::sleep_for(chrono::seconds(1));
+      // this_thread::sleep_for(chrono::seconds(1));
 
     }
-      
+
     }
   close(fd);
   cout << "C++ side ::::::::: closed finished" << endl;

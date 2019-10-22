@@ -44,6 +44,7 @@ def getBbox():
                 # head = sys.stdin.read(1)
             except:
                 print("python side ::::::::: some error :: end??")
+                sys.exit(0)
 
             head = int.from_bytes(head, "big")
             print("python side ::::::::: header length(number of boxes): ", head)
@@ -53,6 +54,10 @@ def getBbox():
             frame_number+=1
             # print("python side ::::::::: data_byte :::::::::::::: ", data_byte)
             # print("python side ::::::::: data_byte length :::::::::::::: ", len(data_byte))
+            if head == 0:
+                print("python side ::::::::: data :::::::::::::: DATA IS EMPTY")
+                continue
+
             for i in range(head):
                 data_byte = os.read(fifo, 24)
                 print("python side :::::::::::: data_byte value :::::: ", data_byte)
