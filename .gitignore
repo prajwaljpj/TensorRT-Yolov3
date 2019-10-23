@@ -24,3 +24,6 @@ models
  backup_old_discard
  __pycache__
 *.mp4
+/#main_infer.cpp#
+*.avi
+/__pycache__/boundbox.cpython-36.pyc
