@@ -3,8 +3,6 @@ import sys
 import struct
 import subprocess
 from multiprocessing import Process
-# import threading
-# import time
 import errno
 import cv2
 from boundbox import Box, wrap_box
@@ -37,7 +35,6 @@ def getBbox():
         while(videocap.isOpened()):
             ret, frame = videocap.read()
             if ret == False:
-                # print("python side ::::::::: ********videocap return gave false*******")
                 break
 
             try:
@@ -50,12 +47,8 @@ def getBbox():
 
             head = int.from_bytes(head, "big")
             print("python side ::::::::: header length(number of boxes): ", head)
-            # print("pythonasdfadf aasdf a asdf asdf asdfasdfasdaffasdf")
-            # print(data_byte.decode("utf-8"))
             print("python side ::::::::: frame_number :::::::::::::: ", frame_number)
             frame_number += 1
-            # print("python side ::::::::: data_byte :::::::::::::: ", data_byte)
-            # print("python side ::::::::: data_byte length :::::::::::::: ", len(data_byte))
             if head == 0:
                 print("python side ::::::::: data :::::::::::::: DATA IS EMPTY")
                 continue
@@ -65,10 +58,6 @@ def getBbox():
                 print("python side :::::::::::: data_byte value :::::: ", data_byte)
                 print("python side :::::::::::: data_byte value :::::: ",
                       len(data_byte))
-                # if len(data_byte[i*24:24+(i*24)]) != 24:
-                #     print("python side ::::::::: BYTE CONFLICT OCCURED +++++ TRYING TO WAIT IN PYTHON SIZE+++++")
-                #     # time.sleep(0.5)
-                # try:
                 data = struct.unpack("=iiiiif", data_byte)
 
                 print("python side ::::::::: data :::::::::::::: ", data)
@@ -77,26 +66,6 @@ def getBbox():
             out.write(frame)
         videocap.release()
         out.release()
-    #             except:
-    #                 print("python side ::::::::: IGNORING BYTE CONFLICT +++++++++ CHECK THE DATA AFTER THIS+++++++")
-    #                 exit(0)
-    # # string = fifo.read()
-
-    # box_count = int(len(string) / 24)
-    # print("box count: ", box_count)
-
-    # box = []
-
-    # for i in range(box_count):
-    #     tup = struct.unpack('=iiiiif', string[i*24:24+(i*24)])
-    #     box.append(tup)
-
-    # print(box)
-    # fifo.close()
-    # # os.remove(path)
-
-# img_path = "/home/rbccps2080/projects/prajwal/test/TensorRT-Yolov3/toydata/frame_84time_3.65217391304.jpg"
-# image = cv.imread(img_path)
 
 
 if __name__ == "__main__":
@@ -105,9 +74,7 @@ if __name__ == "__main__":
     p2 = Process(target=getBbox)
 
     p1.start()
-    # time.sleep(2)
     p2.start()
 
     p1.join()
     p2.join()
-    # getBbox()

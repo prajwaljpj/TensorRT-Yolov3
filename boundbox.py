@@ -41,31 +41,24 @@ class Box(object):
         }
         return box_dict
 
-    @staticmethod
     def left(self):
         return self.box_dict["coord"]["left"]
 
-    @staticmethod
     def right(self):
         return self.box_dict["coord"]["right"]
 
-    @staticmethod
     def top(self):
         return self.box_dict["coord"]["top"]
 
-    @staticmethod
     def bottom(self):
         return self.box_dict["coord"]["bottom"]
 
-    @staticmethod
     def class_confidence(self):
         return self.box_dict["class"]["class_confidence"]
 
-    @staticmethod
     def class_name(self):
         return self.box_dict["class"]["class_name"]
 
-    @staticmethod
     def class_id(self):
         return self.box_dict["class"]["class_id"]
 
@@ -74,9 +67,9 @@ class Box(object):
 
 
 def wrap_box(image_frame, box):
-    print(box.left)
-    cv2.rectangle(image_frame, (box.left, box.top), (box.right, box.bottom), (255,0,0), 2)
-    cv2.putText(image_frame, box.class_name, (box.left, box.top), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-    cv2.putText(image_frame, box.class_confidence,
-                (box.right, box.bottom), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+    print(box.left())
+    cv2.rectangle(image_frame, (box.left(), box.top()), (box.right(), box.bottom()), (255,0,0), 2)
+    cv2.putText(image_frame, box.class_name(), (box.left(), box.top()), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+    cv2.putText(image_frame, str(box.class_confidence()),
+                (box.right(), box.bottom()), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
     return image_frame
